@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../supabaseClient'
 
-// Exact categories requested for Zuhana
 export const PRODUCT_CATEGORIES = [
+  'New Arrivals',
+  'Best Sellers',
   'Crossbody',
   'Shoulder bag',
   'Totebag',
@@ -37,7 +38,6 @@ function Admin() {
   const [imagePreview, setImagePreview] = useState('')
   const [editingId, setEditingId] = useState(null)
 
-  // Default Passcode
   const ADMIN_PIN = 'zuhana2026'
 
   useEffect(() => {
@@ -165,6 +165,8 @@ function Admin() {
         is_sale: false,
         in_stock: true,
         category: 'Crossbody',
+        is_new_arrival: true,
+        is_best_seller: false,
         image_url: ''
       })
       setImageFile(null)
@@ -220,6 +222,8 @@ function Admin() {
       is_sale: product.is_sale || false,
       in_stock: product.in_stock ?? true,
       category: product.category || 'Crossbody',
+      is_new_arrival: true,
+      is_best_seller: false,
       image_url: product.image_url || ''
     })
     setImagePreview(product.image_url || '')
@@ -285,7 +289,7 @@ function Admin() {
           <div>
             <h2>ZUHANA Inventory Admin</h2>
             <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
-              Manage products, stock status, and prices in real time
+              Manage products, categories, stock status, and prices in real time
             </p>
           </div>
           <button onClick={handleLogout} className="logout-btn">
@@ -341,9 +345,9 @@ function Admin() {
                 </div>
               </div>
 
-              {/* Category selection */}
+              {/* Category dropdown */}
               <div className="form-group">
-                <label>Category (Bag Type) *</label>
+                <label>Category / Collection *</label>
                 <select
                   value={formData.category}
                   onChange={e => setFormData({ ...formData, category: e.target.value })}
@@ -471,7 +475,7 @@ function Admin() {
                       <p className="inv-name">{product.name}</p>
                       <p className="inv-meta">
                         <strong>Rs. {Number(product.price).toLocaleString()}</strong>
-                        <span className="inv-category">{product.category || 'Crossbody'}</span>
+                        <span className="inv-category">{product.category || 'General'}</span>
                       </p>
                     </div>
 

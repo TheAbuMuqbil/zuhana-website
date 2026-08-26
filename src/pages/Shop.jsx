@@ -5,6 +5,8 @@ import { supabase } from '../supabaseClient'
 
 export const SHOP_CATEGORIES = [
   'All',
+  'New Arrivals',
+  'Best Sellers',
   'Crossbody',
   'Shoulder bag',
   'Totebag',
@@ -24,7 +26,6 @@ function Shop() {
   const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
 
-  // Sync category if URL parameter changes
   useEffect(() => {
     if (searchParams.get('category')) {
       setActiveCategory(searchParams.get('category'))
@@ -68,7 +69,6 @@ function Shop() {
   function filterProducts() {
     let result = [...products]
 
-    // Category filter matching exact bag types
     if (activeCategory === 'On Sale') {
       result = result.filter(p => p.is_sale)
     } else if (activeCategory === 'In Stock') {
@@ -79,7 +79,6 @@ function Shop() {
       )
     }
 
-    // Search query filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
       result = result.filter(p => 
