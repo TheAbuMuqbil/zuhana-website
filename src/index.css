@@ -128,7 +128,14 @@ h1, h2, h3, h4 {
 .logo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .logo-text {
@@ -1048,6 +1055,20 @@ h1, h2, h3, h4 {
   align-items: center;
   gap: 20px;
   text-align: center;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.footer-logo-img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .footer-logo .logo-text {

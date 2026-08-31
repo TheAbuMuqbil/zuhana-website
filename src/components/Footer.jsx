@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import logoWhite from '../assets/logo-white.png'
 
 function Footer() {
   const instagramUrl = "https://www.instagram.com/zuhana6373?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw=="
@@ -7,6 +8,7 @@ function Footer() {
     <footer className="footer">
       <div className="container footer-inner">
         <div className="footer-logo">
+          <img src={logoWhite} alt="ZUHANA Logo" className="footer-logo-img" />
           <span className="logo-text">ZUHANA</span>
         </div>
 

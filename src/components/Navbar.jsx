@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
+import logoBlack from '../assets/logo-black.png'
 
 function Navbar() {
   const location = useLocation()
@@ -24,6 +25,7 @@ function Navbar() {
       <nav className="navbar">
         <div className="container navbar-inner">
           <Link to="/" className="logo">
+            <img src={logoBlack} alt="ZUHANA Logo" className="logo-img" />
             <span className="logo-text">ZUHANA</span>
           </Link>
 
