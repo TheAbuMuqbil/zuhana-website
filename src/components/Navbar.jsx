@@ -1,10 +1,14 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import logoBlack from '../assets/logo-black.png'
+import { useCart } from '../context/CartContext'
+import { useWishlist } from '../context/WishlistContext'
 
 function Navbar() {
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const { openCart, totalItemCount } = useCart()
+  const { openWishlist, wishlistCount } = useWishlist()
 
   const links = [
     { path: '/', label: 'Home' },
@@ -55,19 +59,35 @@ function Navbar() {
 
           <div className="nav-icons">
             {/* Wishlist Heart Icon */}
-            <button className="icon-btn" aria-label="Wishlist" title="Wishlist">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <button
+              className="icon-btn nav-action-btn"
+              onClick={openWishlist}
+              aria-label="View Favourites"
+              title="Favourites"
+            >
+              <svg viewBox="0 0 24 24" fill={wishlistCount > 0 ? '#E53E3E' : 'none'} stroke={wishlistCount > 0 ? '#E53E3E' : 'currentColor'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
+              {wishlistCount > 0 && (
+                <span className="nav-badge wishlist-badge">{wishlistCount}</span>
+              )}
             </button>
 
             {/* Fashion Shopping Bag Icon */}
-            <button className="icon-btn" aria-label="Shopping Bag" title="Cart">
+            <button
+              className="icon-btn nav-action-btn"
+              onClick={openCart}
+              aria-label="View Shopping Bag"
+              title="Shopping Bag"
+            >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
+              {totalItemCount > 0 && (
+                <span className="nav-badge cart-badge">{totalItemCount}</span>
+              )}
             </button>
           </div>
         </div>

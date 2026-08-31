@@ -1,4 +1,11 @@
+import { useCart } from '../context/CartContext'
+import { useWishlist } from '../context/WishlistContext'
+import { STORE_CONFIG } from '../config'
+
 function ProductCard({ product }) {
+  const { addToCart } = useCart()
+  const { isInWishlist, toggleWishlist } = useWishlist()
+
   // Support both Supabase schema (image_url, is_sale, in_stock) and placeholder fallback
   const id = product?.id
   const name = product?.name || 'Zuhana Premium Bag'
@@ -8,13 +15,14 @@ function ProductCard({ product }) {
   const inStock = product?.in_stock ?? product?.inStock ?? true
   const imageUrl = product?.image_url || product?.image
 
-  // Format WhatsApp message with product details and link
+  const isFavorited = isInWishlist(id)
+
+  // Direct WhatsApp order link for single item
   const currentUrl = window.location.origin + '/shop'
   const whatsappMessage = encodeURIComponent(
-    `Hello ZUHANA! 👜\n\nI want to order this item:\n*Product:* ${name}\n*Price:* Rs. ${price}\n*Stock:* ${inStock ? 'In Stock' : 'Out of Stock'}\n\nLink: ${currentUrl}`
+    `Hello ${STORE_CONFIG.storeName}! 👜\n\nI want to order this item:\n*Product:* ${name}\n*Price:* Rs. ${price}\n*Stock:* ${inStock ? 'In Stock' : 'Out of Stock'}\n\nLink: ${currentUrl}`
   )
-  const whatsappNumber = '923000000000' // Store admin can customize this
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
+  const whatsappUrl = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${whatsappMessage}`
 
   return (
     <div className="product-card">
@@ -41,12 +49,29 @@ function ProductCard({ product }) {
         </div>
 
         <div className="product-actions">
-          <button className="icon-btn wishlist-btn" aria-label="Add to wishlist" title="Wishlist">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: '18px', height: '18px' }}>
+          <button
+            className={`icon-btn wishlist-btn ${isFavorited ? 'favorited' : ''}`}
+            onClick={() => toggleWishlist(product)}
+            aria-label={isFavorited ? 'Remove from wishlist' : 'Add to wishlist'}
+            title={isFavorited ? 'In Wishlist' : 'Add to Wishlist'}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill={isFavorited ? '#E53E3E' : 'none'}
+              stroke={isFavorited ? '#E53E3E' : 'currentColor'}
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ width: '18px', height: '18px' }}
+            >
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
           </button>
-          <button className="add-to-cart-btn" disabled={!inStock}>
+          <button
+            className="add-to-cart-btn"
+            disabled={!inStock}
+            onClick={() => addToCart(product, 1)}
+          >
             {inStock ? 'Add to Cart' : 'Sold Out'}
           </button>
         </div>
