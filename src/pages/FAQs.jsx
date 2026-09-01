@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { STORE_CONFIG } from '../config'
 
 export const FAQS_DATA = [
   {
@@ -66,20 +67,12 @@ export const FAQS_DATA = [
 
 function FAQs() {
   const [openIds, setOpenIds] = useState([1]) // First item opened by default
-  const [searchQuery, setSearchQuery] = useState('')
 
   function toggleFaq(id) {
     setOpenIds(prev =>
       prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     )
   }
-
-  const filteredFaqs = FAQS_DATA.filter(
-    faq =>
-      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.category.toLowerCase().includes(searchQuery.toLowerCase())
-  )
 
   return (
     <div className="faqs-page">
@@ -88,70 +81,45 @@ function FAQs() {
           <span className="section-tag">HELP & SUPPORT</span>
           <h1 className="page-title">Frequently Asked Questions</h1>
           <p className="page-subtitle">
-            Find quick answers to common questions about our bags, orders, delivery, and policies.
+            Find answers to common questions about our bags, ordering, shipping, and policies.
           </p>
-
-          <div className="faqs-search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="search-icon">
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search questions (e.g. delivery, material, returns)..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-            />
-            {searchQuery && (
-              <button className="clear-search-btn" onClick={() => setSearchQuery('')}>✕</button>
-            )}
-          </div>
         </div>
       </div>
 
       <section className="section faqs-content-section">
         <div className="container faqs-container">
-          {filteredFaqs.length > 0 ? (
-            <div className="faqs-accordion">
-              {filteredFaqs.map((faq, index) => {
-                const isOpen = openIds.includes(faq.id)
-                return (
-                  <div
-                    key={faq.id}
-                    className={`faq-item ${isOpen ? 'open' : ''}`}
+          <div className="faqs-accordion">
+            {FAQS_DATA.map((faq, index) => {
+              const isOpen = openIds.includes(faq.id)
+              return (
+                <div
+                  key={faq.id}
+                  className={`faq-item ${isOpen ? 'open' : ''}`}
+                >
+                  <button
+                    className="faq-question-btn"
+                    onClick={() => toggleFaq(faq.id)}
+                    aria-expanded={isOpen}
                   >
-                    <button
-                      className="faq-question-btn"
-                      onClick={() => toggleFaq(faq.id)}
-                      aria-expanded={isOpen}
-                    >
-                      <div className="faq-question-left">
-                        <span className="faq-number">{String(index + 1).padStart(2, '0')}</span>
-                        <span className="faq-question-text">{faq.question}</span>
-                      </div>
-                      <span className="faq-toggle-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="6 9 12 15 18 9" />
-                        </svg>
-                      </span>
-                    </button>
-                    {isOpen && (
-                      <div className="faq-answer">
-                        <p>{faq.answer}</p>
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          ) : (
-            <div className="empty-state">
-              <p>No questions matched &quot;<strong>{searchQuery}</strong>&quot;.</p>
-              <button onClick={() => setSearchQuery('')} className="reset-btn">
-                View All FAQs
-              </button>
-            </div>
-          )}
+                    <div className="faq-question-left">
+                      <span className="faq-number">{String(index + 1).padStart(2, '0')}</span>
+                      <span className="faq-question-text">{faq.question}</span>
+                    </div>
+                    <span className="faq-toggle-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <div className="faq-answer">
+                      <p>{faq.answer}</p>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
 
           {/* Quick Help Card */}
           <div className="faqs-cta-card">
@@ -161,15 +129,15 @@ function FAQs() {
             </div>
             <div className="faqs-cta-actions">
               <Link to="/contact" className="btn-secondary">
-                Contact Page
+                Contact Us
               </Link>
               <a
-                href="https://wa.me/923000000000?text=Hi%20ZUHANA!%20I%20have%20a%20question."
+                href={`https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent('Hello ZUHANA, I have a question about your products.')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary"
               >
-                💬 Chat on WhatsApp
+                Chat on WhatsApp
               </a>
             </div>
           </div>
