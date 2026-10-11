@@ -10,8 +10,10 @@ function WishlistDrawer() {
   function handleMoveToCart(product) {
     addToCart(product, 1)
     removeFromWishlist(product.id)
+    // Close wishlist and open cart — closeWishlist handles history cleanup
     closeWishlist()
-    openCart()
+    // Use a small delay so the history entry from closeWishlist settles
+    setTimeout(() => openCart(), 50)
   }
 
   return (

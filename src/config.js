@@ -2,7 +2,7 @@
 export const STORE_CONFIG = {
   storeName: 'ZUHANA',
   tagline: 'Carry Confidence',
-  whatsappNumber: '923000000000', // Update this to your official WhatsApp business number (with country code, no + or spaces)
+  whatsappNumber: '923716905156', // Official WhatsApp business number
   currency: 'Rs.',
   freeShippingThreshold: 5000,
   standardShippingFee: 250,

@@ -378,6 +378,17 @@ function Shop() {
                 )}
               </div>
             </div>
+
+            {(filterMenuOpen || sortMenuOpen) && (
+              <div
+                className="mobile-dropdown-backdrop"
+                onClick={() => {
+                  setFilterMenuOpen(false)
+                  setSortMenuOpen(false)
+                }}
+                aria-hidden="true"
+              />
+            )}
           </div>
 
           {/* Active Filter Badges Bar */}

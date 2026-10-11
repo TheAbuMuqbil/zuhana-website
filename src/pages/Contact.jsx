@@ -48,7 +48,7 @@ function Contact() {
             </div>
             <h3>Customer Support</h3>
             <p>Need immediate assistance with an order or product details? Chat with us directly.</p>
-            <span className="contact-handle">+92 300 0000000</span>
+            <span className="contact-handle">+92 371 6905156</span>
             <a
               href={whatsappInquiryUrl}
               target="_blank"

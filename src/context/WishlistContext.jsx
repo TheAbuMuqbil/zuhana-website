@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 
 const WishlistContext = createContext()
 
@@ -15,6 +15,8 @@ export function WishlistProvider({ children }) {
   })
 
   const [isWishlistOpen, setIsWishlistOpen] = useState(false)
+  // Track if we pushed a history entry for the wishlist drawer
+  const historyPushedRef = useRef(false)
 
   useEffect(() => {
     try {
@@ -23,6 +25,19 @@ export function WishlistProvider({ children }) {
       console.error('Failed to save wishlist to localStorage:', e)
     }
   }, [wishlistItems])
+
+  // Handle Android back button (popstate) to close the wishlist
+  useEffect(() => {
+    function handlePopState(e) {
+      if (isWishlistOpen) {
+        e.preventDefault()
+        historyPushedRef.current = false
+        setIsWishlistOpen(false)
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [isWishlistOpen])
 
   function isInWishlist(productId) {
     if (!productId) return false
@@ -56,13 +71,23 @@ export function WishlistProvider({ children }) {
     setWishlistItems(prev => prev.filter(item => item.id !== productId))
   }
 
-  function openWishlist() {
+  const openWishlist = useCallback(() => {
+    // Push a history entry so Android back button can close the drawer
+    if (!historyPushedRef.current) {
+      window.history.pushState({ drawer: 'wishlist' }, '')
+      historyPushedRef.current = true
+    }
     setIsWishlistOpen(true)
-  }
+  }, [])
 
-  function closeWishlist() {
+  const closeWishlist = useCallback(() => {
+    // Pop the history entry we pushed (so back doesn't double-fire)
+    if (historyPushedRef.current) {
+      historyPushedRef.current = false
+      window.history.back()
+    }
     setIsWishlistOpen(false)
-  }
+  }, [])
 
   return (
     <WishlistContext.Provider

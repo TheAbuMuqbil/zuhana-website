@@ -7,8 +7,8 @@ import { useWishlist } from '../context/WishlistContext'
 function Navbar() {
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
-  const { openCart, totalItemCount } = useCart()
-  const { openWishlist, wishlistCount } = useWishlist()
+  const { openCart, closeCart, isCartOpen, totalItemCount } = useCart()
+  const { openWishlist, closeWishlist, isWishlistOpen, wishlistCount } = useWishlist()
 
   const links = [
     { path: '/', label: 'Home' },
@@ -18,50 +18,89 @@ function Navbar() {
     { path: '/contact', label: 'Contact Us' },
   ]
 
+  function handleOpenWishlist() {
+    if (isCartOpen) closeCart()
+    openWishlist()
+  }
+
+  function handleOpenCart() {
+    if (isWishlistOpen) closeWishlist()
+    openCart()
+  }
+
   const hamburgerClass = "hamburger" + (menuOpen ? " active" : "")
   const navLinksClass = "nav-links" + (menuOpen ? " open" : "")
 
   return (
     <>
       <div className="announcement-bar">
-        Free shipping on orders above 5000!
+        <span className="announcement-text">
+          🚚 Free delivery on orders above 5000!
+        </span>
       </div>
       <nav className="navbar">
         <div className="container navbar-inner">
-          <Link to="/" className="logo">
-            <img src={logoBlack} alt="ZUHANA Logo" className="logo-img" />
-            <span className="logo-text">ZUHANA</span>
-          </Link>
+          <div className="navbar-brand-group">
+            <button
+              className={hamburgerClass}
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle menu"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
 
-          <button
-            className={hamburgerClass}
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
+            <Link to="/" className="logo">
+              <img src={logoBlack} alt="ZUHANA Logo" className="logo-img" />
+              <span className="logo-text">ZUHANA</span>
+            </Link>
+          </div>
 
-          <ul className={navLinksClass}>
-            {links.map(link => (
-              <li key={link.path}>
-                <Link
-                  to={link.path}
-                  className={location.pathname === link.path ? 'active' : ''}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className={`nav-links-drawer ${menuOpen ? 'open' : ''}`}>
+            <div className="drawer-nav-header">
+              <div className="drawer-brand">
+                <img src={logoBlack} alt="ZUHANA Logo" className="logo-img" />
+                <span className="logo-text">ZUHANA</span>
+              </div>
+              <button
+                className="drawer-nav-close"
+                onClick={() => setMenuOpen(false)}
+                aria-label="Close menu"
+              >
+                ✕
+              </button>
+            </div>
+
+            <ul className="nav-links">
+              {links.map(link => (
+                <li key={link.path}>
+                  <Link
+                    to={link.path}
+                    className={location.pathname === link.path ? 'active' : ''}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <span>{link.label}</span>
+                    <span className="nav-arrow">→</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {menuOpen && (
+            <div
+              className="mobile-nav-backdrop"
+              onClick={() => setMenuOpen(false)}
+              aria-hidden="true"
+            />
+          )}
 
           <div className="nav-icons">
             {/* Wishlist Heart Icon */}
             <button
               className="icon-btn nav-action-btn"
-              onClick={openWishlist}
+              onClick={handleOpenWishlist}
               aria-label="View Favourites"
               title="Favourites"
             >
@@ -76,7 +115,7 @@ function Navbar() {
             {/* Fashion Shopping Bag Icon */}
             <button
               className="icon-btn nav-action-btn"
-              onClick={openCart}
+              onClick={handleOpenCart}
               aria-label="View Shopping Bag"
               title="Shopping Bag"
             >

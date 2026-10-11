@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 
 const CartContext = createContext()
 
@@ -16,6 +16,8 @@ export function CartProvider({ children }) {
 
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [toastMessage, setToastMessage] = useState(null)
+  // Track if we pushed a history entry for the cart drawer
+  const historyPushedRef = useRef(false)
 
   useEffect(() => {
     try {
@@ -24,6 +26,19 @@ export function CartProvider({ children }) {
       console.error('Failed to save cart to localStorage:', e)
     }
   }, [cartItems])
+
+  // Handle Android back button (popstate) to close the cart
+  useEffect(() => {
+    function handlePopState(e) {
+      if (isCartOpen) {
+        e.preventDefault()
+        historyPushedRef.current = false
+        setIsCartOpen(false)
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [isCartOpen])
 
   function showToast(msg) {
     setToastMessage(msg)
@@ -94,13 +109,23 @@ export function CartProvider({ children }) {
     setCartItems([])
   }
 
-  function openCart() {
+  const openCart = useCallback(() => {
+    // Push a history entry so Android back button can close the drawer
+    if (!historyPushedRef.current) {
+      window.history.pushState({ drawer: 'cart' }, '')
+      historyPushedRef.current = true
+    }
     setIsCartOpen(true)
-  }
+  }, [])
 
-  function closeCart() {
+  const closeCart = useCallback(() => {
+    // Pop the history entry we pushed (so back doesn't double-fire)
+    if (historyPushedRef.current) {
+      historyPushedRef.current = false
+      window.history.back()
+    }
     setIsCartOpen(false)
-  }
+  }, [])
 
   const totalItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0)
   const selectedItems = cartItems.filter(item => item.selected)

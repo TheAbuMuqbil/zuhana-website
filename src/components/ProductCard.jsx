@@ -36,6 +36,27 @@ function ProductCard({ product }) {
           </div>
         )}
         {isSale && <span className="sale-badge">SALE</span>}
+        <button
+          className={`card-wishlist-overlay-btn ${isFavorited ? 'favorited' : ''}`}
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            toggleWishlist(product)
+          }}
+          aria-label={isFavorited ? 'Remove from wishlist' : 'Add to wishlist'}
+          title={isFavorited ? 'In Wishlist' : 'Add to Wishlist'}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill={isFavorited ? '#E53E3E' : 'none'}
+            stroke={isFavorited ? '#E53E3E' : 'currentColor'}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
+        </button>
       </div>
 
       <div className="product-info">

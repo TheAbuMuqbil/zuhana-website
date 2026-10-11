@@ -1,0 +1,21 @@
+{
+  "name": "ZUHANA - Carry Confidence",
+  "short_name": "ZUHANA",
+  "description": "Luxury handcrafted bags designed for everyday elegance.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#342858",
+  "icons": [
+    {
+      "src": "/logo-black.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo-black.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
